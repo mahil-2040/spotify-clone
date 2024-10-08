@@ -94,7 +94,7 @@ class Signin extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => const Signup()));
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => Signup()));
             },
             child: const Text('Register Now', style: TextStyle(fontSize: 17),),
           ),
