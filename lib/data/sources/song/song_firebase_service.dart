@@ -5,6 +5,7 @@ import 'package:spotify/domain/entities/song/song.dart';
 
 abstract class SongFirebaseService {
   Future<Either<String, List<SongEntity>>> getNewsSongs();
+  Future<Either> getPlayList();
 }
 
 class SongFirebaseServiceImpl extends SongFirebaseService {
@@ -16,6 +17,30 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
           .collection('Songs')
           .orderBy('releaseDate', descending: true)
           .limit(4)
+          .get();
+
+      for (var element in data.docs) {
+        try {
+          var songModel = SongModel.fromJson(element.data());
+          songs.add(songModel.toEntity());
+        } catch (e) {
+          return const Left('Data format error: unable to convert song.');
+        }
+      }
+
+      return Right(songs);
+    } catch (e) {
+      return const Left('An error occurred while fetching songs. Please try again later.');
+    }
+  }
+  
+  @override
+  Future<Either> getPlayList() async {
+    try {
+      List<SongEntity> songs = [];
+      var data = await FirebaseFirestore.instance
+          .collection('Songs')
+          .orderBy('releaseDate', descending: true)
           .get();
 
       for (var element in data.docs) {
