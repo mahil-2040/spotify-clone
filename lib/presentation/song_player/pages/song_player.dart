@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify/common/widgets/appbar/app_bar.dart';
+import 'package:spotify/common/widgets/favorite_button/favorite_button.dart';
 import 'package:spotify/core/configs/Themes/app_color.dart';
 import 'package:spotify/core/configs/constants/app_urls.dart';
 import 'package:spotify/domain/entities/song/song.dart';
@@ -99,14 +100,7 @@ class SongPlayerPage extends StatelessWidget {
               ),
             ],
           ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.favorite_outline_outlined,
-              size: 35,
-              color: AppColors.darkGrey,
-            ),
-          ),
+          FavoriteButton(songEntity: songEntity),
         ],
       ),
     );
@@ -153,13 +147,17 @@ class SongPlayerPage extends StatelessWidget {
                     color: AppColors.grey,
                     size: 30,
                   ),
-                  const SizedBox(width: 25,),
+                  const SizedBox(
+                    width: 25,
+                  ),
                   const Icon(
                     Icons.skip_previous_rounded,
                     color: AppColors.grey,
                     size: 35,
                   ),
-                  const SizedBox(width: 25,),
+                  const SizedBox(
+                    width: 25,
+                  ),
                   GestureDetector(
                     onTap: () {
                       context.read<SongPlayerCubit>().playOrPauseSong();
@@ -179,13 +177,17 @@ class SongPlayerPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 25,),
+                  const SizedBox(
+                    width: 25,
+                  ),
                   const Icon(
                     Icons.skip_next_rounded,
                     size: 35,
                     color: AppColors.grey,
                   ),
-                  const SizedBox(width: 25,),
+                  const SizedBox(
+                    width: 25,
+                  ),
                   const Icon(
                     Icons.shuffle_rounded,
                     color: AppColors.grey,

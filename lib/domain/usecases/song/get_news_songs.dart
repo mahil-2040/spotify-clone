@@ -1,4 +1,6 @@
 import 'package:dartz/dartz.dart';
+import 'package:spotify/core/error/failure.dart';
+import 'package:spotify/domain/entities/song/song.dart';
 import 'package:spotify/domain/repository/song/song.dart';
 
 class GetNewsSongsUseCase {
@@ -6,7 +8,7 @@ class GetNewsSongsUseCase {
 
   GetNewsSongsUseCase(this.songsRepository);
 
-  Future<Either> call() async {
-    return await songsRepository.getNewsSongs(); // Use the instance to call the method
+  Future<Either<Failure, List<SongEntity>>> call() async {
+    return await songsRepository.getNewsSongs();
   }
 }

@@ -8,14 +8,15 @@ class NewsSongsCubit extends Cubit<NewsSongsState> {
   NewsSongsCubit(this.getNewsSongsUseCase) : super(NewsSongsLoading());
 
   Future<void> getNewsSongs() async {
-    emit(NewsSongsLoading()); // Emit loading state
+    emit(NewsSongsLoading()); 
     var returnedSongs = await getNewsSongsUseCase.call();
     returnedSongs.fold(
       (failure) {
         emit(NewsSongsLoadFailure());
-      }, // Emit failure state
-      (songs) =>
-          emit(NewsSongsLoaded(songs: songs)), // Emit loaded state with data
+      },
+      (songs) {
+        emit(NewsSongsLoaded(songs: songs));
+      },
     );
   }
 }

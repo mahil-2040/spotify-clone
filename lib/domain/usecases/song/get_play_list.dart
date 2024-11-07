@@ -1,13 +1,16 @@
 import 'package:dartz/dartz.dart';
 import 'package:spotify/core/usecase/usecase.dart';
+import 'package:spotify/domain/entities/song/song.dart';
+import 'package:spotify/domain/repository/song/song.dart';
+import 'package:spotify/core/error/failure.dart';
 
-import '../../../service_locator.dart';
-import '../../repository/song/song.dart';
+class GetPlayListUseCase implements UseCase<Either<Failure, List<SongEntity>>, void> {
+  final SongsRepository songsRepository;
 
-class GetPlayListUseCase implements UseCase<Either, dynamic>{
+  GetPlayListUseCase(this.songsRepository);
 
   @override
-  Future<Either> call({params}) async {
-    return await sl<SongsRepository>().getPlayList(); // Use the instance to call the method
+  Future<Either<Failure, List<SongEntity>>> call({void params}) async {
+    return await songsRepository.getPlayList(); 
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify/common/helpers/is_dark_mode.dart';
+import 'package:spotify/common/widgets/favorite_button/favorite_button.dart';
 import 'package:spotify/core/configs/Themes/app_color.dart';
 import 'package:spotify/domain/entities/song/song.dart';
 import 'package:spotify/presentation/home/bloc/play_list_cubit.dart';
@@ -56,7 +57,7 @@ class PlayList extends StatelessWidget {
             ),
           );
         }
-
+        print('sdfg');
         return Container();
       }),
     );
@@ -129,14 +130,7 @@ class PlayList extends StatelessWidget {
                   Text(
                     songs[index].duration.toString().replaceAll('.', ':'),
                   ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.favorite_outline_outlined,
-                      size: 25,
-                      color: AppColors.darkGrey,
-                    ),
-                  ),
+                  FavoriteButton(songEntity: songs[index]),
                 ],
               )
             ],
