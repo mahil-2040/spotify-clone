@@ -12,6 +12,7 @@ abstract class SongFirebaseService {
   Future<Either<Failure, List<SongEntity>>> getPlayList();
   Future<Either> addOrRemoveFavoriteSongs(String songId);
   Future<bool> isFavoriteSong(String songId);
+  Future<Either> getUserFavoriteSongs();
 }
 
 class SongFirebaseServiceImpl extends SongFirebaseService {
@@ -28,19 +29,22 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
       for (var element in data.docs) {
         try {
           var songModel = SongModel.fromJson(element.data());
-          Either<Failure, bool> isFavorite = await sl<IsFavoriteSongUseCase>().call(
+          Either<Failure, bool> isFavorite =
+              await sl<IsFavoriteSongUseCase>().call(
             params: element.reference.id,
           );
           songModel.isFavorite = isFavorite.fold((_) => false, (fav) => fav);
           songModel.songId = element.reference.id;
           songs.add(songModel.toEntity());
         } catch (e) {
-          return Left(DataFormatFailure("Data format error: unable to convert song."));
+          return Left(
+              DataFormatFailure("Data format error: unable to convert song."));
         }
       }
       return Right(songs);
     } catch (e) {
-      return Left(ServerFailure("An error occurred while fetching songs. Please try again later."));
+      return Left(ServerFailure(
+          "An error occurred while fetching songs. Please try again later."));
     }
   }
 
@@ -56,19 +60,22 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
       for (var element in data.docs) {
         try {
           var songModel = SongModel.fromJson(element.data());
-          Either<Failure, bool> isFavorite = await sl<IsFavoriteSongUseCase>().call(
+          Either<Failure, bool> isFavorite =
+              await sl<IsFavoriteSongUseCase>().call(
             params: element.reference.id,
           );
           songModel.isFavorite = isFavorite.fold((_) => false, (fav) => fav);
           songModel.songId = element.reference.id;
           songs.add(songModel.toEntity());
         } catch (e) {
-          return Left(DataFormatFailure("Data format error: unable to convert song."));
+          return Left(
+              DataFormatFailure("Data format error: unable to convert song."));
         }
       }
       return Right(songs);
     } catch (e) {
-      return Left(ServerFailure("An error occurred while fetching playlist. Please try again later."));
+      return Left(ServerFailure(
+          "An error occurred while fetching playlist. Please try again later."));
     }
   }
 
@@ -129,9 +136,42 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
         return true;
       } else {
         return false;
-      } 
+      }
     } catch (e) {
       return false;
+    }
+  }
+
+  @override
+  Future<Either> getUserFavoriteSongs() async {
+    try {
+      final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+      final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+      List<SongEntity> favoriteSongs = [];
+      var user = firebaseAuth.currentUser;
+      String uId = user!.uid;
+
+      QuerySnapshot favoriteSnapshots = await firebaseFirestore
+          .collection('Users')
+          .doc(uId)
+          .collection('Favorites')
+          .get();
+      
+      for(var element in favoriteSnapshots.docs) {
+        String songId = element['songId'];
+        var song = await firebaseFirestore.collection('Songs').doc(songId).get();
+
+        SongModel songModel = SongModel.fromJson(song.data()!);
+        songModel.isFavorite = true;
+        songModel.songId = songId;
+        favoriteSongs.add(
+          songModel.toEntity()
+        );
+      }
+
+      return Right(favoriteSongs);
+    } catch (e) {
+      return const Left('An error occurred');
     }
   }
 }
